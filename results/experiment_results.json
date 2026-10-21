@@ -1,0 +1,76 @@
+{
+  "model": "U-Net",
+  "encoder": "ResNet18",
+  "training_epochs": 10,
+  "best_epoch": 7,
+  "prediction_threshold": 0.5,
+  "train_images": 1000,
+  "validation_images": 200,
+  "test_images": 300,
+  "validation_dice": 0.7897,
+  "validation_iou": 0.6614,
+  "test_dice": 0.7404,
+  "test_iou": 0.603,
+  "training_history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.5510385975837707,
+      "val_loss": 0.5783909481763839,
+      "val_dice": 0.5207386696338654
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.3512675530910492,
+      "val_loss": 0.37918594360351565,
+      "val_dice": 0.7074725759029389
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.3227666498422623,
+      "val_loss": 0.37839482456445694,
+      "val_dice": 0.7043346464633942
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.2951060215830803,
+      "val_loss": 0.34311258763074876,
+      "val_dice": 0.7349431598186493
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.2842561607956886,
+      "val_loss": 0.48107919573783875,
+      "val_dice": 0.6056115144491195
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.28228038454055787,
+      "val_loss": 0.300139434337616,
+      "val_dice": 0.7715654218196869
+    },
+    {
+      "epoch": 7,
+      "train_loss": 0.2608942425251007,
+      "val_loss": 0.2774658861756325,
+      "val_dice": 0.7897064483165741
+    },
+    {
+      "epoch": 8,
+      "train_loss": 0.2587463688254356,
+      "val_loss": 0.3125989192724228,
+      "val_dice": 0.7655523443222045
+    },
+    {
+      "epoch": 9,
+      "train_loss": 0.24817062360048295,
+      "val_loss": 0.29360244899988175,
+      "val_dice": 0.7782021248340607
+    },
+    {
+      "epoch": 10,
+      "train_loss": 0.23706848698854446,
+      "val_loss": 0.2822300574183464,
+      "val_dice": 0.7836678683757782
+    }
+  ]
+}

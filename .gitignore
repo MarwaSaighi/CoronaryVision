@@ -22,3 +22,6 @@ outputs/
 # Local secrets
 .env
 .env.*
+# Ignore trained models
+models/*.pt
+models/*.pth
