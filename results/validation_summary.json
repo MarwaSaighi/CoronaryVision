@@ -1,0 +1,10 @@
+{
+  "model": "unet_imagenet_best",
+  "split": "validation",
+  "threshold": 0.5,
+  "num_images": 200,
+  "mean_dice": 0.7991177611225827,
+  "mean_iou": 0.6740589190026963,
+  "mean_precision": 0.8296611559043785,
+  "mean_recall": 0.7836766705976647
+}
