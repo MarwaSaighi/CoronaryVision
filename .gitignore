@@ -22,6 +22,10 @@ outputs/
 # Local secrets
 .env
 .env.*
-# Ignore trained models
+
+# Model checkpoints
 models/*.pt
 models/*.pth
+
+# VS Code personal settings
+.vscode/
