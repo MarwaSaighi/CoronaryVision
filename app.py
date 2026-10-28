@@ -23,21 +23,66 @@ st.write(
 
 st.warning("Research demonstration only. Not for clinical use.")
 
-uploaded_file = st.file_uploader(
-    "Upload a coronary angiography image",
-    type=["png", "jpg", "jpeg"]
+EXAMPLES_DIR = Path(__file__).resolve().parent / "assets" / "examples"
+
+st.subheader("Try CoronaryVision")
+
+input_mode = st.radio(
+    "Choose how to provide an image",
+    ["Try an example", "Upload your own"],
+    horizontal=True,
 )
 
-annotation_file = st.file_uploader(
-    "Upload ARCADE ground-truth annotations (test.json)",
-    type=["json"]
-)
+image = None
+image_filename = None
+
+if input_mode == "Try an example":
+
+    typical_images = [
+        path for path in EXAMPLES_DIR.glob("*.png")
+        if path.name not in {"89.png", "109.png"}
+    ]
+
+    examples = {}
+
+    if len(typical_images) == 1:
+        examples["Near-median validation example"] = typical_images[0]
+
+    examples["Low-recall example (89.png)"] = EXAMPLES_DIR / "89.png"
+    examples["Low-precision example (109.png)"] = EXAMPLES_DIR / "109.png"
+
+    selected = st.selectbox(
+        "Choose an angiography example",
+        list(examples.keys()),
+    )
+
+    selected_path = examples[selected]
+
+    if selected_path.is_file():
+        image = Image.open(selected_path)
+        image_filename = selected_path.name
+    else:
+        st.error("Example image is missing.")
+
+else:
+    uploaded_file = st.file_uploader(
+        "Upload a coronary angiography image",
+        type=["png", "jpg", "jpeg"],
+    )
+
+    if uploaded_file is not None:
+        image = Image.open(uploaded_file)
+        image_filename = uploaded_file.name
+
+with st.expander("Advanced: Ground-truth evaluation"):
+    annotation_file = st.file_uploader(
+        "Upload annotations (optional)",
+        type=["json"]
+    )
 
 model = get_model()
 
-if uploaded_file is not None:
-    image = Image.open(uploaded_file)
-
+if image is not None:
     with st.spinner("Generating segmentation..."):
         original, overlay, predicted_mask, probability_map = segment_image(image, model)
 
@@ -65,7 +110,7 @@ if uploaded_file is not None:
 
         matches = [
             info for info in coco["images"]
-            if Path(info["file_name"]).name == uploaded_file.name
+            if Path(info["file_name"]).name == image_filename
         ]
 
         if len(matches) != 1:
@@ -152,3 +197,8 @@ if uploaded_file is not None:
                 f"False positives: {fp_count:,} | "
                 f"Missed vessel pixels: {fn_count:,}"
             )
+st.caption(
+    "Example images: ARCADE SYNTAX validation dataset "
+    "(Popov et al., Scientific Data, 2024). "
+    "Research demonstration only — not for clinical use."
+)
