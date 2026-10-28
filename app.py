@@ -7,64 +7,11 @@ import segmentation_models_pytorch as smp
 from PIL import Image
 import json
 from src.mask_utils import create_mask_from_annotations
+from src.inference import load_model, segment_image
 
-
-# Load the trained model once
 @st.cache_resource
-def load_model():
-    model = smp.Unet(
-        encoder_name="resnet18",
-        encoder_weights=None,
-        in_channels=1,
-        classes=1
-    )
-
-    checkpoint_path = (
-        Path(__file__).resolve().parent
-        / "models"
-        / "unet_imagenet_best.pt"
-    )
-
-    checkpoint = torch.load(
-        checkpoint_path,
-        map_location="cpu",
-        weights_only=True
-    )
-
-    model.load_state_dict(checkpoint["model_state_dict"])
-    model.eval()
-
-    return model
-
-
-def segment_image(uploaded_image, model):
-    # Preprocessing
-    image = uploaded_image.convert("L")
-    image = image.resize((512, 512), Image.Resampling.BILINEAR)
-
-    image_array = np.array(image, dtype=np.float32) / 255.0
-
-    tensor = torch.from_numpy(image_array)
-    tensor = tensor.unsqueeze(0).unsqueeze(0)
-
-    # Model inference
-    with torch.inference_mode():
-        logits = model(tensor)
-        probabilities = torch.sigmoid(logits)
-
-    probability_map = probabilities[0, 0].cpu().numpy()
-    mask = probability_map >= 0.5
-
-    # Create red segmentation overlay
-    overlay = np.array(image.convert("RGB")).copy()
-
-    overlay[mask] = (
-        0.6 * overlay[mask]
-        + 0.4 * np.array([255, 0, 0])
-    ).astype(np.uint8)
-
-    return image, Image.fromarray(overlay), mask, probability_map
-
+def get_model():
+    return load_model()
 
 # Web interface
 st.title("CoronaryVision")
@@ -86,7 +33,7 @@ annotation_file = st.file_uploader(
     type=["json"]
 )
 
-model = load_model()
+model = get_model()
 
 if uploaded_file is not None:
     image = Image.open(uploaded_file)
